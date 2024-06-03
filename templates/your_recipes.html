@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+    body {
+        background-image: url("{{ url_for('static', filename='about_bg.png') }}");
+        background-size: auto;
+        background-repeat: no-repeat;
+        background-position: center center;
+    
+    }
+    
+    
+</style>
+<h2>Your Recipes</h2>
+<div class="recipe-grid">
+    {% for recipe in recipes %}
+    <div class="recipe-tile">
+        <a href="{{ url_for('recipe_detail', recipe_id=recipe['id']) }}">
+            <img src="{{ recipe['image_url'] }}" alt="{{ recipe['name'] }}">
+            <h3>{{ recipe['name'] }}</h3>
+        </a>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

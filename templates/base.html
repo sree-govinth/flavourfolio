@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FlavourFolio</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <style>
+        .flash-message {
+            padding: 10px;
+            margin: 10px;
+            border: 1px solid transparent;
+            border-radius: 4px;
+            text-align: center;
+        }
+        .flash-message.info {
+            color: #31708f;
+            background-color: #d9edf7;
+            border-color: #bce8f1;
+        }
+        .flash-message.success {
+            color: #3c763d;
+            background-color: #dff0d8;
+            border-color: #d6e9c6;
+        }
+        .flash-message.warning {
+            color: #8a6d3b;
+            background-color: #fcf8e3;
+            border-color: #faebcc;
+        }
+        .flash-message.danger {
+            color: #a94442;
+            background-color: #f2dede;
+            border-color: #ebccd1;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="nav-container">
+            <img src="/static/flavorfolio_white.png" style="max-height: 50px;" alt="Flavorfolio" class="logo">
+            <nav>
+                <a href="{{ url_for('dashboard') }}">Dashboard</a> |
+                <a href="{{ url_for('search') }}">Search</a> |
+                <a href="{{ url_for('upload') }}">Upload</a> |
+                <a href="{{ url_for('about') }}">About Us</a>
+            </nav>
+            {% if session['username'] %}
+                <div class="account-container">
+                    <i class="fas fa-user" id="account-icon" style="size: 50px;"></i>
+                    <div class="dropdown">
+                        <p>{{ session['username'] }}</p>
+                        <a href="{{ url_for('your_recipes') }}">Your Recipes</a>
+                        <a href="{{ url_for('logout') }}">Logout</a>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </header>
+    
+    <main>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash-message {{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        {% block content %}{% endblock %}
+    </main>
+
+    <script>
+        // Automatically hide flash messages after 5 seconds
+        window.setTimeout(function() {
+            var messages = document.querySelectorAll('.flash-message');
+            messages.forEach(function(message) {
+                message.style.display = 'none';
+            });
+        }, 5000);
+
+        // Dropdown menu for account
+        document.addEventListener('DOMContentLoaded', function() {
+            var accountIcon = document.querySelector('#account-icon');
+            var dropdown = document.querySelector('.dropdown');
+
+            accountIcon.addEventListener('click', function() {
+                dropdown.classList.toggle('show');
+            });
+
+            window.addEventListener('click', function(event) {
+                if (!event.target.matches('#account-icon')) {
+                    if (dropdown.classList.contains('show')) {
+                        dropdown.classList.remove('show');
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
